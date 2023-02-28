@@ -1,0 +1,12 @@
+spring:
+  h2.console:
+     enabled: true
+     path: /console
+  datasource:
+     url: jdbc:h2:file:C:/Users/domin/OneDrive/Pulpit/Kurs Java/Spring/todo-app/tododb
+  jpa:
+     hibernate:
+       ddl-auto: validate
+
+
+
