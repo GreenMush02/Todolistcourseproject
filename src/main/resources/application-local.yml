@@ -7,6 +7,8 @@ spring:
   jpa:
      hibernate:
        ddl-auto: validate
+  flyway:
+  baselineOnMigrate: true
 
 
 

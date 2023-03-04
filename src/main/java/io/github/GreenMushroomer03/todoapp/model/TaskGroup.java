@@ -19,11 +19,23 @@ public class TaskGroup extends TaskBased{
     private Set<Task> tasks;
     @Embedded
     private Audit audit = new Audit();
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
 
 
     public TaskGroup(){
 
     }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
     public Set<Task> getTasks() {
         return tasks;
     }
