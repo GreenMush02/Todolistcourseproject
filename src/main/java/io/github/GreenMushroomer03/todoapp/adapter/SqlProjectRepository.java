@@ -2,8 +2,6 @@ package io.github.GreenMushroomer03.todoapp.adapter;
 
 import io.github.GreenMushroomer03.todoapp.model.Project;
 import io.github.GreenMushroomer03.todoapp.model.ProjectRepository;
-import io.github.GreenMushroomer03.todoapp.model.ProjectSteps;
-import io.github.GreenMushroomer03.todoapp.model.TaskGroup;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

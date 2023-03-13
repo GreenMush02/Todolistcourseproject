@@ -16,13 +16,23 @@ public class Project {
     @OneToMany(mappedBy = "project")
     private Set<TaskGroup> groups;
     @OneToMany(mappedBy = "project")
-    private Set<ProjectSteps> steps;
+    private Set<ProjectStep> steps;
 
-    public Set<ProjectSteps> getSteps() {
+    public Project(int id, String description, Set<TaskGroup> groups, Set<ProjectStep> steps) {
+        this.id = id;
+        this.description = description;
+        this.groups = groups;
+        this.steps = steps;
+    }
+
+    Project() {
+
+    }
+    public Set<ProjectStep> getSteps() {
         return steps;
     }
 
-    public void setSteps(Set<ProjectSteps> steps) {
+    public void setSteps(Set<ProjectStep> steps) {
         this.steps = steps;
     }
 
