@@ -1,5 +1,6 @@
 package io.github.GreenMushroomer03.todoapp.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
@@ -8,9 +9,15 @@ abstract class TaskBased {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int id;
+    @JsonProperty("description")
     @NotBlank(message = "Description must not be empty")
     public String description;
+    @JsonProperty("done")
     public boolean done;
+
+    public TaskBased() {
+
+    }
 
     public int getId() {
         return id;

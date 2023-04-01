@@ -1,5 +1,6 @@
 package io.github.GreenMushroomer03.todoapp.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 @Table(name = "tasks")
 public class Task extends TaskBased {
 
+    @JsonProperty("deadline")
     private LocalDateTime deadline;
     @ManyToOne
     @JoinColumn(name = "task_group_id")
@@ -17,13 +19,21 @@ public class Task extends TaskBased {
     @Embedded
     private Audit audit = new Audit();
 
+
     public Task(){
 
     }
 
     public Task(String description, LocalDateTime deadline){
+       this(description, deadline, null);
+    }
+
+    public Task(String description, LocalDateTime deadline, TaskGroup group){
         this.description = description;
         this.deadline = deadline;
+        if (group != null) {
+            this.group = group;
+        }
     }
 
 

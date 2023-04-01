@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -27,7 +27,7 @@ class ProjectServiceTest {
         //and
         TaskConfigurationProperties mockConfig = configurationReturning(false);
         //system under test
-        var toTest = new ProjectService(mockConfig, mockGroupRepository,null);
+        var toTest = new ProjectService(mockGroupRepository, null, null, mockConfig);
         // when (gdy wołamy testowaną metodę)
         var exception = catchThrowable(() -> toTest.createGroup(0, LocalDateTime.now()));
         //then (czy metoda wyskutkowała to co założyliśmy)
@@ -49,7 +49,7 @@ class ProjectServiceTest {
         //and
         TaskConfigurationProperties mockConfig = configurationReturning(true);
         //system under test
-        var toTest = new ProjectService(mockConfig, null,mockRepository);
+        var toTest = new ProjectService(null, mockRepository, null, mockConfig);
 
 
         // when (gdy wołamy testowaną metodę)
@@ -77,7 +77,7 @@ class ProjectServiceTest {
         //and
         TaskConfigurationProperties mockConfig = configurationReturning(true);
         //system under test
-        var toTest = new ProjectService(mockConfig, mockGroupRepository,mockRepository);
+        var toTest = new ProjectService(mockGroupRepository, mockRepository, null, mockConfig);
 
 
         // when (gdy wołamy testowaną metodę)
@@ -100,38 +100,45 @@ class ProjectServiceTest {
         //given
         var today = LocalDate.now().atStartOfDay();
         //and
+        var project =  projectWith("bar", Set.of(-1,-2));
         var mockRepository = mock(ProjectRepository.class);
-        when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
+        when(mockRepository.findById(anyInt()))
+                .thenReturn(Optional.of(project));
         //and
         InMemoryGroupRepository inMemoryGroupRepo = inMemoryGroupRepository();
+        var serviceWithInMemRepo = dummyGroupService(inMemoryGroupRepo);
         var countBeforeCall = inMemoryGroupRepo.count();
         //and
         TaskConfigurationProperties mockConfig = configurationReturning(true);
         //system under test
-        var toTest = new ProjectService(mockConfig, inMemoryGroupRepo,mockRepository);
+        var toTest = new ProjectService(inMemoryGroupRepo, mockRepository, serviceWithInMemRepo, mockConfig);
 
         //when
         GroupReadModel result = toTest.createGroup(1, today);
 
         //then
-      //  assertThat(result)
-        assertThat(countBeforeCall + 1)
-                .isNotEqualTo(inMemoryGroupRepo.count());
+        assertThat(result.getDescription()).isEqualTo("bar");
+        assertThat(result.getDeadline()).isEqualTo(today.minusDays(1));
+        assertThat(result.getTasks()).allMatch(task -> task.getDescription().equals("foo"));
+        assertThat(countBeforeCall).isEqualTo(inMemoryGroupRepo.count());
+    }
+
+    private static TaskGroupService dummyGroupService(InMemoryGroupRepository inMemoryGroupRepo) {
+        return new TaskGroupService(inMemoryGroupRepo, null);
     }
 
     private Project projectWith (String projectDescription, Set<Integer> daysToDeadline) {
+        Set<ProjectStep> steps = daysToDeadline.stream()
+                .map(days -> {
+                    var step = mock(ProjectStep.class);
+                    when(step.getDescription()).thenReturn("foo");
+                    when(step.getDaysToDeadline()).thenReturn(days);
+                    return step;
+                }).collect(Collectors.toSet());
         var result = mock(Project.class);
         when(result.getDescription()).thenReturn(projectDescription);
-        when(result.getSteps()).thenReturn(
-                daysToDeadline.stream()
-                        .map(days -> {
-                            var step = mock(ProjectStep.class);
-                            when(step.getDescription()).thenReturn("foo");
-                            when(step.getDaysToDeadline()).thenReturn(days);
-                            return step;
-                        }).collect(Collectors.toSet())
-        );
-                return result;
+        when(result.getSteps()).thenReturn(steps);
+        return result;
     }
 
     private TaskGroupRepository groupRepositoryReturning(final boolean result) {
@@ -176,12 +183,13 @@ class ProjectServiceTest {
             public TaskGroup save(TaskGroup entity) {
                 if(entity.getId() == 0){
                     try {
-                        TaskGroup.class.getDeclaredField("id").set(entity, ++index);
+                        var field = TaskGroup.class.getDeclaredField("id");
+                        field.setAccessible(true);
+                        field.set(entity, ++index);
                     } catch (NoSuchFieldException | IllegalAccessException e) {
                         throw new RuntimeException(e);
                     }
                 } else {
-
                     map.put(entity.getId(), entity);
                 }
                 return entity;

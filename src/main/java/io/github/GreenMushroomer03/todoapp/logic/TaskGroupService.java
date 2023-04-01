@@ -11,9 +11,9 @@ import org.springframework.web.context.annotation.RequestScope;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
-//Używamy go aby w obrębie 1 rządania mieć unikalną instancję serwisu. Dopiero gdy wpada rządanie http, to powstaje serwis.
-@RequestScope
+//@Service
+////Używamy go aby w obrębie 1 żądania mieć unikalną instancję serwisu. Dopiero gdy wpada rządanie http, to powstaje serwis.
+//@RequestScope
 public class TaskGroupService {
     private TaskGroupRepository repository;
     private TaskRepository taskRepository;

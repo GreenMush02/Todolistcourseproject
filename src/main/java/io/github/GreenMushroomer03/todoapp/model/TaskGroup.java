@@ -15,6 +15,9 @@ public class TaskGroup extends TaskBased{
     //cascade ALL -> whenever group is removed, changed or something -> all tasks in are also...
     //mappedBy -> points a field that owns the relation (field with @ManyToOne addnot)
     //fetch LAZY -> lazy loading -> tasks are loaded in sql QUERY only when it is necessary
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public int id;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "group", fetch = FetchType.LAZY)
     private Set<Task> tasks;
     @Embedded
@@ -26,6 +29,16 @@ public class TaskGroup extends TaskBased{
 
     public TaskGroup(){
 
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Project getProject() {

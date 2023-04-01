@@ -1,6 +1,7 @@
 package io.github.GreenMushroomer03.todoapp.model.projection.write;
 
 import io.github.GreenMushroomer03.todoapp.model.Task;
+import io.github.GreenMushroomer03.todoapp.model.TaskGroup;
 
 import java.time.LocalDateTime;
 
@@ -24,7 +25,7 @@ public class GroupTaskWriteModel {
         this.deadline = deadline;
     }
 
-    public Task toTask() {
+    public Task toTask(final TaskGroup group) {
         return new Task(description, deadline);
     }
 }
