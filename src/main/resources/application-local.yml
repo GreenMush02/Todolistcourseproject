@@ -9,6 +9,11 @@ spring:
        ddl-auto: validate
   flyway:
   baselineOnMigrate: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
 
 
 

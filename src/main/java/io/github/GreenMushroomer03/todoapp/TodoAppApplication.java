@@ -7,10 +7,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.rest.core.event.ValidatingRepositoryEventListener;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 // Możemy zaimportować klasę konfiguracyjną (np. jeżeli jest umieszczona w innym niż głównym pakiecie)
 //@Import(TaskConfigurationProperties.class)
+
+@EnableAsync
 @SpringBootApplication
 public class TodoAppApplication {
 

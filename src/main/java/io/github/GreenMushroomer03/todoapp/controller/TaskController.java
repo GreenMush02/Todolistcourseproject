@@ -1,5 +1,6 @@
 package io.github.GreenMushroomer03.todoapp.controller;
 
+import io.github.GreenMushroomer03.todoapp.logic.TaskService;
 import io.github.GreenMushroomer03.todoapp.model.Task;
 import io.github.GreenMushroomer03.todoapp.model.TaskRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,6 +28,7 @@ import java.util.List;
 public class TaskController {
     private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
     private final TaskRepository repository;
+//    private final TaskService taskService;
 
     TaskController(@Lazy final TaskRepository repository) {
         this.repository = repository;
@@ -43,6 +45,7 @@ public class TaskController {
     @GetMapping(params={"!sort", "!page", "!size"})
     ResponseEntity<List<Task>> readAllTasks() {
         logger.warn("Exposing all the tasks!");
+//        return taskService.findAllAsync().thenApply(ResponseEntity::ok);
         return ResponseEntity.ok(repository.findAll());
     }
 

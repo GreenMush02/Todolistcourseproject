@@ -1,5 +1,6 @@
 package io.github.GreenMushroomer03.todoapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -14,6 +15,7 @@ public class Task extends TaskBased {
     @JsonProperty("deadline")
     private LocalDateTime deadline;
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "task_group_id")
     private TaskGroup group;
     @Embedded
