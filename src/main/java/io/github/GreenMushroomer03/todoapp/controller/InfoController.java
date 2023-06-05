@@ -31,4 +31,6 @@ public class InfoController {
         return myProp.getTemplate().isAllowMultipleTasks();
 
     }
+
+    //status (ustawiony defaultowo, warto zainteresować się endpointem /metrics)
 }

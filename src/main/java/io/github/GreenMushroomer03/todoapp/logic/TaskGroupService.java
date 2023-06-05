@@ -1,5 +1,6 @@
 package io.github.GreenMushroomer03.todoapp.logic;
 
+import io.github.GreenMushroomer03.todoapp.model.Project;
 import io.github.GreenMushroomer03.todoapp.model.TaskGroup;
 import io.github.GreenMushroomer03.todoapp.model.TaskGroupRepository;
 import io.github.GreenMushroomer03.todoapp.model.TaskRepository;
@@ -11,7 +12,7 @@ import org.springframework.web.context.annotation.RequestScope;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//@Service
+@Service
 ////Używamy go aby w obrębie 1 żądania mieć unikalną instancję serwisu. Dopiero gdy wpada rządanie http, to powstaje serwis.
 //@RequestScope
 public class TaskGroupService {
@@ -25,10 +26,12 @@ public class TaskGroupService {
     }
 
     public GroupReadModel createGroup(GroupWriteModel source) {
-        TaskGroup result = repository.save(source.toGroup());
+        return createGroup(source, null);
+    }
+    public GroupReadModel createGroup(GroupWriteModel source, Project project) {
+        TaskGroup result = repository.save(source.toGroup(project));
         return new GroupReadModel(result);
     }
-
     public List<GroupReadModel> readAll() {
         return repository.findAll()
                 .stream()
@@ -44,5 +47,6 @@ public class TaskGroupService {
         result.setDone(!result.isDone());
         repository.save(result);
     }
+
 
 }

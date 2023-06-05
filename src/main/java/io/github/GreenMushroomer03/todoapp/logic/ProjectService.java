@@ -5,12 +5,14 @@ import io.github.GreenMushroomer03.todoapp.model.*;
 import io.github.GreenMushroomer03.todoapp.model.projection.read.GroupReadModel;
 import io.github.GreenMushroomer03.todoapp.model.projection.write.GroupTaskWriteModel;
 import io.github.GreenMushroomer03.todoapp.model.projection.write.GroupWriteModel;
+import io.github.GreenMushroomer03.todoapp.model.projection.write.ProjectWriteModel;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//@Service
+@Service
 public class ProjectService {
 
     private ProjectRepository projectRepository;
@@ -30,6 +32,9 @@ public class ProjectService {
         return projectRepository.save(toSave);
     }
 
+//    public ProjectWriteModel save(ProjectWriteModel toSave) {
+//        return projectRepository.save(toSave);
+//    }
     public List<Project> readAll() {
         return projectRepository.findAll();
     }
@@ -52,7 +57,7 @@ public class ProjectService {
                                             }
                                     ).collect(Collectors.toSet())
                     );
-                    return service.createGroup(targetGroup);
+                    return service.createGroup(targetGroup, project);
     }).orElseThrow(() -> new IllegalArgumentException("Project with given id not found"));
     }
 }

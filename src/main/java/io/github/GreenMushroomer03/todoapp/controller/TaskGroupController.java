@@ -16,6 +16,7 @@ import java.util.List;
 
 
 @RestController
+@IllegalExceptionsProcessing
 @RequestMapping("/groups")
 public class TaskGroupController {
     public static final Logger logger = LoggerFactory.getLogger(TaskGroupController.class);
@@ -29,10 +30,9 @@ public class TaskGroupController {
         this.repository = repository;
     }
 
-    @PostMapping
-    ResponseEntity<GroupReadModel> createGroup(@RequestBody @Valid GroupWriteModel toCreate) {
-        GroupReadModel result = service.createGroup(toCreate);
-        return ResponseEntity.created(URI.create("/" + result.getId())).body(result);
+    @GetMapping("/test")
+    public String getRepositoryString () {
+        return repository.toString();
     }
 
     @GetMapping
@@ -42,6 +42,13 @@ public class TaskGroupController {
         return ResponseEntity.ok(result);
     }
 
+    @PostMapping
+    ResponseEntity<GroupReadModel> createGroup(@RequestBody @Valid GroupWriteModel toCreate) {
+        GroupReadModel result = service.createGroup(toCreate);
+        return ResponseEntity.created(URI.create("/" + result.getId())).body(result);
+    }
+
+
     @Transactional
     @PatchMapping("/{id}")
     public ResponseEntity<?> toggleGroup(@PathVariable int id){
@@ -49,13 +56,5 @@ public class TaskGroupController {
         return ResponseEntity.ok().build();
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    ResponseEntity<String> handleIllegalArgument(IllegalArgumentException e) {
-        return ResponseEntity.notFound().build();
-    }
 
-    @ExceptionHandler(IllegalStateException.class)
-        ResponseEntity<String> handleIllegalState(IllegalStateException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
 }

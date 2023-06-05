@@ -1,6 +1,5 @@
 package io.github.GreenMushroomer03.todoapp.controller;
 
-import io.github.GreenMushroomer03.todoapp.logic.TaskService;
 import io.github.GreenMushroomer03.todoapp.model.Task;
 import io.github.GreenMushroomer03.todoapp.model.TaskRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,31 +8,41 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
-import org.springframework.data.rest.webmvc.RepositoryRestController;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.URI;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/tasks")
 public class TaskController {
     private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
+    private final ApplicationEventPublisher applicationEventPublisher;
+
     private final TaskRepository repository;
+
 //    private final TaskService taskService;
 
-    TaskController(@Lazy final TaskRepository repository) {
+    TaskController(ApplicationEventPublisher applicationEventPublisher,  TaskRepository repository) {
+        this.applicationEventPublisher = applicationEventPublisher;
         this.repository = repository;
     }
 
+
+    @GetMapping("/test")
+    public String getRepositoryString () {
+        return repository.toString();
+    }
     @PostMapping
     ResponseEntity<Task> createTask(@RequestBody @Valid Task toCreate){
 
@@ -42,6 +51,7 @@ public class TaskController {
 
     }
 
+
     @GetMapping(params={"!sort", "!page", "!size"})
     ResponseEntity<List<Task>> readAllTasks() {
         logger.warn("Exposing all the tasks!");
@@ -49,11 +59,13 @@ public class TaskController {
         return ResponseEntity.ok(repository.findAll());
     }
 
+
     @GetMapping
     ResponseEntity<List<Task>> readAllTasks(Pageable page) {
         logger.info("Custom pageable");
         return ResponseEntity.ok(repository.findAll(page).getContent());
     }
+
 
     @GetMapping("/{id}")
     ResponseEntity<Task> readTask(@PathVariable int id) {
@@ -73,12 +85,18 @@ public class TaskController {
         );
     }
 
+    @GetMapping("/search/today")
+    ResponseEntity<List<Task>> readTasksForToday() {
+        LocalDate today = LocalDate.now();
+        LocalDateTime todayToCompareAtStart = today.atStartOfDay();
+        LocalDateTime todayToCompareAtEnd = today.atTime(LocalTime.MAX);
+        return ResponseEntity.ok(repository.findTasksWithDeadlineBetween(todayToCompareAtStart, todayToCompareAtEnd));
+    }
     @GetMapping("/test")
     void oldFashionedWay(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         System.out.println(req.getParameter("foo"));
         resp.getWriter().println("test old-fashioned way");
     }
-
 
     @PutMapping("/{id}")
     ResponseEntity<?> updateTask(@PathVariable int id, @RequestBody @Valid Task toUpdate) {
@@ -92,6 +110,9 @@ public class TaskController {
                 });
         return ResponseEntity.noContent().build();
     }
+    //Transactional jest adnotacją pochodną od programowania aspektowego, oznacza ona, że przed
+    // jej wykonaniem rozpoczyna się transakcja bazodanowa i po, której ta transakcja jest zatwierdzana na bazie.
+
     @Transactional
     @PatchMapping ("/{id}")
     public ResponseEntity<?> toggleTask(@PathVariable int id) {
@@ -100,7 +121,8 @@ public class TaskController {
         }
 
         repository.findById(id)
-                .ifPresent(task -> task.setDone((!task.isDone())));
+                .map(Task::toggle)
+                .ifPresent(applicationEventPublisher::publishEvent);
         return ResponseEntity.noContent().build();
     }
 

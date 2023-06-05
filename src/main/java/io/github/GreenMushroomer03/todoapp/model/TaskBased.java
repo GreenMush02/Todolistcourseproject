@@ -12,8 +12,6 @@ abstract class TaskBased {
     @JsonProperty("description")
     @NotBlank(message = "Description must not be empty")
     public String description;
-    @JsonProperty("done")
-    public boolean done;
 
     public TaskBased() {
 
@@ -35,16 +33,7 @@ abstract class TaskBased {
         this.description = description;
     }
 
-    public boolean isDone() {
-        return done;
-    }
-
-    public void setDone(boolean done) {
-        this.done = done;
-    }
-
     public void updateFrom(TaskBased source) {
        description = source.description;
-       done = source.done;
     }
 }

@@ -3,10 +3,21 @@ spring:
     banner-mode: off
   profiles:
     active: local
+
 task.template.allowMultipleTasks: false
 management:
   endpoints:
     web:
-      base-path: /status
+      base-path: /actuator
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  server:
+    port: 8080
+#  metrics:
+#    enable:
+#      http: false
 
 

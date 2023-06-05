@@ -11,6 +11,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Configuration
@@ -77,6 +78,11 @@ public class TestConfiguration {
 
             @Override
             public List<Task> findByDone(boolean done) {
+                return null;
+            }
+
+            @Override
+            public List<Task> findTasksWithDeadlineBetween(LocalDateTime date1, LocalDateTime date2) {
                 return null;
             }
         };

@@ -2,6 +2,8 @@ package io.github.GreenMushroomer03.todoapp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.github.GreenMushroomer03.todoapp.model.event.TaskEvent;
+import io.github.GreenMushroomer03.todoapp.model.event.TaskUndone;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
@@ -12,6 +14,8 @@ import java.time.LocalDateTime;
 @Table(name = "tasks")
 public class Task extends TaskBased {
 
+    @JsonProperty("done")
+    private boolean done;
     @JsonProperty("deadline")
     private LocalDateTime deadline;
     @ManyToOne
@@ -45,6 +49,7 @@ public class Task extends TaskBased {
 
     public void updateFrom(Task source) {
         super.updateFrom(source);
+        done = source.done;
         deadline = source.deadline;
         group = source.group;
     }
@@ -52,6 +57,14 @@ public class Task extends TaskBased {
         this.deadline = deadline;
     }
 
+    public boolean isDone() {
+        return done;
+    }
+
+    public TaskEvent toggle() {
+        this.done = !this.done;
+        return TaskEvent.changed(this);
+    }
 
     public TaskGroup getGroup() {
         return group;

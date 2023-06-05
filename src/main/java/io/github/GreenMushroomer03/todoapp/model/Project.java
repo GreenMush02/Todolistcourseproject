@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "projects")
-public class Project {
+public class  Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -25,7 +25,7 @@ public class Project {
         this.steps = steps;
     }
 
-    Project() {
+    public Project() {
 
     }
     public Set<ProjectStep> getSteps() {

@@ -6,6 +6,7 @@ import io.github.GreenMushroomer03.todoapp.model.TaskGroupRepository;
 import io.github.GreenMushroomer03.todoapp.model.TaskRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 
 //Jeżeli chcemy przestać polegać na springu, a jedynie na czystych klasach javowych to wywalamy tą konfiguracje.

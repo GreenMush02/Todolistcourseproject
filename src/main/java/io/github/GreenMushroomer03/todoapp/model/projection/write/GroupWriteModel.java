@@ -1,5 +1,6 @@
 package io.github.GreenMushroomer03.todoapp.model.projection.write;
 
+import io.github.GreenMushroomer03.todoapp.model.Project;
 import io.github.GreenMushroomer03.todoapp.model.TaskGroup;
 import io.github.GreenMushroomer03.todoapp.model.projection.write.GroupTaskWriteModel;
 
@@ -26,7 +27,7 @@ public class GroupWriteModel {
         this.tasks = tasks;
     }
 
-    public TaskGroup toGroup() {
+    public TaskGroup toGroup(final Project project) {
         var result = new TaskGroup();
 
         result.setDescription(description);
@@ -35,6 +36,7 @@ public class GroupWriteModel {
                         .map(source -> source.toTask(result))
                         .collect(Collectors.toSet())
         );
+        result.setProject(project);
         return result;
 
     }

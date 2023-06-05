@@ -11,4 +11,5 @@ public class V2__insert_example_todo extends BaseJavaMigration {
         new JdbcTemplate(new SingleConnectionDataSource(context.getConnection(), true))
                 .execute("insert into tasks (description, done) values ('Task from migration', true)");
     }
+
 }

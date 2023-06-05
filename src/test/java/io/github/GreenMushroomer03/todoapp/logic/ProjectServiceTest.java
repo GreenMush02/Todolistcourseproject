@@ -162,7 +162,7 @@ class ProjectServiceTest {
 
     private static class InMemoryGroupRepository implements TaskGroupRepository {
 
-            private int index = 0;
+        private int index = 0;
             private Map<Integer, TaskGroup> map = new HashMap<>();
 
             public int count() {
@@ -201,7 +201,15 @@ class ProjectServiceTest {
                         .filter(group -> !group.isDone())
                         .anyMatch(group -> group.getProject() != null && group.getProject().getId() == projectId);
             }
-        };
+
+        @Override
+        public boolean existsByDescription(String description) {
+            return map.values().stream().anyMatch(group -> group.getDescription().equals(description));
+        }
+
+    };
+
+
 
     }
 

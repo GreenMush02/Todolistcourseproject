@@ -20,6 +20,7 @@ public class TaskService {
         this.repository = repository;
     }
 
+
     @Async
     public CompletableFuture<List<Task>> findAllAsync() {
         logger.info("Async findAllAsync");

@@ -18,6 +18,7 @@ public class TaskGroup extends TaskBased{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int id;
+    private boolean done;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "group", fetch = FetchType.LAZY)
     private Set<Task> tasks;
     @Embedded
@@ -29,6 +30,14 @@ public class TaskGroup extends TaskBased{
 
     public TaskGroup(){
 
+    }
+
+    public boolean isDone() {
+        return done;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
     }
 
     @Override
@@ -58,7 +67,7 @@ public class TaskGroup extends TaskBased{
     }
 
     public void updateFrom(TaskGroup source) {
-        super.updateFrom(source);
+        done = source.done;
         tasks = source.tasks;
     }
 }
